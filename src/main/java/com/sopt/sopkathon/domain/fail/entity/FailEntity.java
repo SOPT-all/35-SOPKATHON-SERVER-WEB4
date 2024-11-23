@@ -58,4 +58,20 @@ public class FailEntity {
             return new FailEntity(this);
         }
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public BackgroundType getBackgroundType() {
+        return backgroundType;
+    }
 }

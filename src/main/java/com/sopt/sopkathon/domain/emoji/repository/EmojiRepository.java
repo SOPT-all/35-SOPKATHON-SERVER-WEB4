@@ -1,4 +1,11 @@
 package com.sopt.sopkathon.domain.emoji.repository;
 
-public class EmojiRepository {
+import com.sopt.sopkathon.domain.emoji.entity.EmojiEntity;
+import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface EmojiRepository extends JpaRepository<EmojiEntity, Long> {
+    int countByFailIdAndEmojiType(Long failId, EmojiType emojiType);
 }

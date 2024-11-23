@@ -1,5 +1,6 @@
 package com.sopt.sopkathon.domain.fail.controller.dto.res;
 
+import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public record MyAllFailsRes(
             int goodCount,
             int talentCount,
             int pellikeonCount,
-            int drinkCount
+            int drinkCount,
+            EmojiType clickedEmoji
     ) {
 
 
@@ -29,7 +31,8 @@ public record MyAllFailsRes(
                                     int goodCount,
                                     int talentCount,
                                     int pellikeonCount,
-                                    int drinkCount) {
+                                    int drinkCount,
+                                    EmojiType clickedEmoji) {
             return new Builder()
                     .failId(failId)
                     .content(content)
@@ -38,6 +41,7 @@ public record MyAllFailsRes(
                     .talentCount(talentCount)
                     .pellikeonCount(pellikeonCount)
                     .drinkCount(drinkCount)
+                    .clickedEmoji(clickedEmoji)
                     .build();
         }
 
@@ -53,6 +57,7 @@ public record MyAllFailsRes(
             private int talentCount;
             private int pellikeonCount;
             private int drinkCount;
+            private EmojiType clickedEmoji;
 
             public Builder failId(Long failId) {
                 this.failId = failId;
@@ -89,8 +94,13 @@ public record MyAllFailsRes(
                 return this;
             }
 
+            public Builder clickedEmoji(EmojiType clickedEmoji) {
+                this.clickedEmoji = clickedEmoji;
+                return this;
+            }
+
             public MyFailInfo build() {
-                return new MyFailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount);
+                return new MyFailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

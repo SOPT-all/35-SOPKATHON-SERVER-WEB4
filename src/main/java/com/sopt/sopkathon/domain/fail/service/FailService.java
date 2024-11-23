@@ -2,6 +2,7 @@ package com.sopt.sopkathon.domain.fail.service;
 
 import com.sopt.sopkathon.common.exception.CustomException;
 import com.sopt.sopkathon.common.response.message.FailMessage;
+import com.sopt.sopkathon.domain.emoji.entity.EmojiEntity;
 import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.emoji.repository.EmojiRepository;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
@@ -10,6 +11,7 @@ import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 import com.sopt.sopkathon.domain.fail.repository.FailRepository;
 import com.sopt.sopkathon.domain.user.entity.UserEntity;
 import com.sopt.sopkathon.domain.user.repository.UserRepository;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +31,12 @@ public class FailService {
     }
 
     //실패 전체 목록 조회
-    public AllFailsRes getAllFails() {
+    public AllFailsRes getAllFails(final Long userID) {
+
+        final UserEntity foundUser = userRepository.findById(userID).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
         final List<FailEntity> foundFails = failRepository.findAll();
         if (foundFails.isEmpty()) {
             throw new CustomException(FailMessage.NOT_FOUND_ENTITY);
@@ -37,7 +44,7 @@ public class FailService {
 
         final List<AllFailsRes.FailInfo> failInfos = foundFails.stream().map(
                 failEntity -> {
-                    final UserEntity foundUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
+                    final UserEntity writerUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
                             () -> new CustomException(FailMessage.NOT_FOUND_ENTITY));
 
                     final int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
@@ -45,15 +52,27 @@ public class FailService {
                     final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
                     final int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
 
+                    EmojiType clickedEmojiType;
+
+                    if(emojiRepository.existsByUserIdAndFailId(foundUser.getId(), failEntity.getId())) {
+                        final EmojiEntity foundEmoji = emojiRepository.findByUserIdAndFailId(foundUser.getId(), failEntity.getId()).orElseThrow(
+                                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+                        );
+                        clickedEmojiType = foundEmoji.getEmojiType();
+                    } else {
+                        clickedEmojiType = EmojiType.NOTHING;
+                    }
+
                     return AllFailsRes.FailInfo.of(
                             failEntity.getId(),
                             failEntity.getContent(),
-                            foundUser.getUserName(),
+                            writerUser.getUserName(),
                             failEntity.getBackgroundType(),
                             goodCount,
                             talentCount,
                             pellikeonCount,
-                            drinkCount
+                            drinkCount,
+                            clickedEmojiType
                     );
                 }).toList();
         return AllFailsRes.of(failInfos);
@@ -61,6 +80,11 @@ public class FailService {
 
     //내 개인 실패 목록 조회
     public MyAllFailsRes getMyFails(final Long userId) {
+
+        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
         final List<FailEntity> foundMyFails = failRepository.findAllByUserId(userId);
 
         if (foundMyFails.isEmpty()) {
@@ -84,6 +108,17 @@ public class FailService {
                     int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
                     int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
 
+                    EmojiType clickedEmoji;
+
+                    if(emojiRepository.existsByUserIdAndFailId(foundUser.getId(), failEntity.getId())) {
+                        final EmojiEntity foundEmoji = emojiRepository.findByUserIdAndFailId(foundUser.getId(), failEntity.getId()).orElseThrow(
+                                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+                        );
+                        clickedEmoji = foundEmoji.getEmojiType();
+                    } else {
+                        clickedEmoji = EmojiType.NOTHING;
+                    }
+
                     return MyAllFailsRes.MyFailInfo.of(
                             failEntity.getId(),
                             failEntity.getContent(),
@@ -91,7 +126,8 @@ public class FailService {
                             goodCount,
                             talentCount,
                             pellikeonCount,
-                            drinkCount
+                            drinkCount,
+                            clickedEmoji
                     );
                 })
                 .collect(Collectors.toList());

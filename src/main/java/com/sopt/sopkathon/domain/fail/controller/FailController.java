@@ -21,8 +21,10 @@ public class FailController {
     }
 
     @GetMapping("/fails")
-    public ResponseEntity<BaseResponse<?>> getAllFails() {
-        final AllFailsRes allFails = failService.getAllFails();
+    public ResponseEntity<BaseResponse<?>> getAllFails(
+            @RequestHeader final Long userId
+    ) {
+        final AllFailsRes allFails = failService.getAllFails(userId);
         return ApiResponseUtil.success(SuccessMessage.OK, allFails);
     }
 

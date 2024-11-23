@@ -4,5 +4,6 @@ public enum EmojiType {
     GOOD,
     TALENT,
     PELLIKEON,
-    DRINK
+    DRINK,
+    NOTHING
 }

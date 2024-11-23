@@ -1,5 +1,6 @@
 package com.sopt.sopkathon.domain.fail.controller.dto.res;
 
+import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 
@@ -21,7 +22,8 @@ public record AllFailsRes(
             int goodCount,
             int talentCount,
             int pellikeonCount,
-            int drinkCount
+            int drinkCount,
+            EmojiType clickedEmoji
     ) {
 
 
@@ -32,7 +34,8 @@ public record AllFailsRes(
                                   int goodCount,
                                   int talentCount,
                                   int pellikeonCount,
-                                  int drinkCount) {
+                                  int drinkCount,
+                                  EmojiType clickedEmoji) {
             return new Builder()
                     .failId(failId)
                     .content(content)
@@ -42,6 +45,7 @@ public record AllFailsRes(
                     .talentCount(talentCount)
                     .pellikeonCount(pellikeonCount)
                     .drinkCount(drinkCount)
+                    .clickedEmoji(clickedEmoji)
                     .build();
         }
 
@@ -58,6 +62,7 @@ public record AllFailsRes(
             private int talentCount;
             private int pellikeonCount;
             private int drinkCount;
+            private EmojiType clickedEmoji;
 
             public Builder failId(Long failId) {
                 this.failId = failId;
@@ -99,8 +104,13 @@ public record AllFailsRes(
                 return this;
             }
 
+            public Builder clickedEmoji(EmojiType clickedEmoji) {
+                this.clickedEmoji = clickedEmoji;
+                return this;
+            }
+
             public FailInfo build() {
-                return new FailInfo(failId, content, userName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount);
+                return new FailInfo(failId, content, userName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

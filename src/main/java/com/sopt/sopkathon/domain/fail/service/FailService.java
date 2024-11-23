@@ -5,15 +5,18 @@ import com.sopt.sopkathon.common.response.message.FailMessage;
 import com.sopt.sopkathon.domain.emoji.entity.EmojiEntity;
 import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.emoji.repository.EmojiRepository;
+import com.sopt.sopkathon.domain.fail.controller.dto.req.FailCreateReq;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.DetailFailInfo;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.FailRankList;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.MyAllFailsRes;
+import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 import com.sopt.sopkathon.domain.fail.repository.FailRepository;
 import com.sopt.sopkathon.domain.user.entity.UserEntity;
 import com.sopt.sopkathon.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -227,5 +230,15 @@ public class FailService {
                 pellikeonCount,
                 drinkCount,
                 clickedEmojiType);
+    }
+
+    // fail 생성
+    @Transactional
+    public void createFail(final Long userId, final String content, final BackgroundType backgroundType) {
+        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+        final FailEntity newFail = FailEntity.create(content, userId, backgroundType);
+        failRepository.save(newFail);
     }
 }

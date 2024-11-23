@@ -3,6 +3,7 @@ package com.sopt.sopkathon.domain.fail.controller;
 import com.sopt.sopkathon.common.response.ApiResponseUtil;
 import com.sopt.sopkathon.common.response.BaseResponse;
 import com.sopt.sopkathon.common.response.message.SuccessMessage;
+import com.sopt.sopkathon.domain.fail.controller.dto.req.FailCreateReq;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.DetailFailInfo;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.FailRankList;
@@ -51,5 +52,14 @@ public class FailController {
     ) {
         final DetailFailInfo detailFailInfo = failService.getDetailFailInfo(userId, failId);
         return ApiResponseUtil.success(SuccessMessage.OK, detailFailInfo);
+    }
+
+    @PostMapping("/fail")
+    public ResponseEntity<BaseResponse<?>> createFail(
+            @RequestHeader(name = "userId") final Long userId,
+            @RequestBody final FailCreateReq failCreateReq
+            ) {
+        failService.createFail(userId, failCreateReq.content(), failCreateReq.backgroundType());
+        return ApiResponseUtil.success(SuccessMessage.OK);
     }
 }

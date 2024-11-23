@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmojiRepository extends JpaRepository<EmojiEntity, Long> {
     int countByFailIdAndEmojiType(Long failId, EmojiType emojiType);
+    int countByFailId(Long failId);
+
 }

@@ -27,7 +27,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:5174/")); //  허용할 origin
+            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:5173")); //  허용할 origin
             config.setAllowCredentials(false); //쿠키 수신 X
             return config;
         };

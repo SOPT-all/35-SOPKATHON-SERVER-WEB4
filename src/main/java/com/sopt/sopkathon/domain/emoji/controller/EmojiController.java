@@ -23,9 +23,9 @@ public class EmojiController {
 
     @PostMapping("/emoji/{failId}")
     public ResponseEntity<BaseResponse<?>> postEmoji(
-            @RequestHeader final Long userId,
-            @PathVariable final Long failId,
-            @RequestParam final EmojiType emojiType
+            @RequestHeader(name = "userId") final Long userId,
+            @PathVariable(name = "failId") final Long failId,
+            @RequestParam(name = "emojiType") final EmojiType emojiType
     ) {
         emojiService.postEmoji(userId, failId, emojiType);
         return ApiResponseUtil.success(SuccessMessage.CREATED);

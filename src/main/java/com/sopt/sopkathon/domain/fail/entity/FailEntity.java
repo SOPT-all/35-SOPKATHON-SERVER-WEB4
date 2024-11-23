@@ -7,16 +7,16 @@ import jakarta.persistence.*;
 public class FailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "fail_id")
+    @Column(name = "fail_id", nullable = false)
     private Long id;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private long userId;
 
-    @Column(name = "background_type")
+    @Column(name = "background_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private BackgroundType backgroundType;
 

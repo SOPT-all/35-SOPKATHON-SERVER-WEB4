@@ -8,16 +8,16 @@ public class EmojiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "emoji_id")
+    @Column(name = "emoji_id", nullable = false)
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private long userId;
 
-    @Column(name = "fail_id")
+    @Column(name = "fail_id", nullable = false)
     private long failId;
 
-    @Column(name = "emoji_type")
+    @Column(name = "emoji_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private EmojiType emojiType;
 

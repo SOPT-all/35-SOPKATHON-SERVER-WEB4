@@ -45,10 +45,11 @@ public class FailService {
 
         final List<AllFailsRes.FailInfo> failInfos = foundFails.stream().map(
                 failEntity -> {
-                    final int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
-                    final int talentCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
-                    final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
-                    final int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
+
+                    final int goodCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
+                    final int talentCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
+                    final int pellikeonCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
+                    final int drinkCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
 
                     EmojiType clickedEmojiType;
 
@@ -97,10 +98,10 @@ public class FailService {
         // 정렬된 실패 데이터를 MyAllFailsRes로 변환
         List<MyAllFailsRes.MyFailInfo> failInfos = sortedFails.stream()
                 .map(failEntity -> {
-                    int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
-                    int talentCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
-                    int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
-                    int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
+                    final int goodCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
+                    final int talentCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
+                    final int pellikeonCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
+                    final int drinkCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
 
                     EmojiType clickedEmoji;
 
@@ -150,10 +151,10 @@ public class FailService {
                     final UserEntity writerUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
                             () -> new CustomException(FailMessage.NOT_FOUND_ENTITY));
 
-                    final int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
-                    final int talentCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
-                    final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
-                    final int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
+                    final int goodCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
+                    final int talentCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
+                    final int pellikeonCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
+                    final int drinkCount = countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
 
                     EmojiType clickedEmojiType;
 
@@ -194,10 +195,10 @@ public class FailService {
                 () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
         );
 
-        final int goodCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.GOOD);
-        final int talentCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.TALENT);
-        final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.PELLIKEON);
-        final int drinkCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.DRINK);
+        final int goodCount = countByFailIdAndEmojiType(foundFail.getId(), EmojiType.GOOD);
+        final int talentCount = countByFailIdAndEmojiType(foundFail.getId(), EmojiType.TALENT);
+        final int pellikeonCount = countByFailIdAndEmojiType(foundFail.getId(), EmojiType.PELLIKEON);
+        final int drinkCount = countByFailIdAndEmojiType(foundFail.getId(), EmojiType.DRINK);
 
         EmojiType clickedEmojiType;
 
@@ -235,6 +236,10 @@ public class FailService {
         return userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
         );
+    }
+
+    private int countByFailIdAndEmojiType(final Long failId, final EmojiType emojiType) {
+        return emojiRepository.countByFailIdAndEmojiType(failId, emojiType);
     }
 
 }

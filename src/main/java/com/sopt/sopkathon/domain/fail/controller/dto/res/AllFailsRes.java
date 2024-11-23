@@ -2,7 +2,6 @@ package com.sopt.sopkathon.domain.fail.controller.dto.res;
 
 import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
-import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public record AllFailsRes(
     public record FailInfo(
             Long failId,
             String content,
-            String userName,
             BackgroundType backgroundType,
             int goodCount,
             int talentCount,
@@ -29,7 +27,6 @@ public record AllFailsRes(
 
         public static FailInfo of(Long failId,
                                   String content,
-                                  String userName,
                                   BackgroundType backgroundType,
                                   int goodCount,
                                   int talentCount,
@@ -39,7 +36,6 @@ public record AllFailsRes(
             return new Builder()
                     .failId(failId)
                     .content(content)
-                    .userName(userName)
                     .backgroundType(backgroundType)
                     .goodCount(goodCount)
                     .talentCount(talentCount)
@@ -53,10 +49,9 @@ public record AllFailsRes(
             return new Builder();
         }
 
-        public static class Builder {
+        private static class Builder {
             private Long failId;
             private String content;
-            private String userName;
             private BackgroundType backgroundType;
             private int goodCount;
             private int talentCount;
@@ -71,11 +66,6 @@ public record AllFailsRes(
 
             public Builder content(String content) {
                 this.content = content;
-                return this;
-            }
-
-            public Builder userName(String userName) {
-                this.userName = userName;
                 return this;
             }
 
@@ -110,7 +100,7 @@ public record AllFailsRes(
             }
 
             public FailInfo build() {
-                return new FailInfo(failId, content, userName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
+                return new FailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

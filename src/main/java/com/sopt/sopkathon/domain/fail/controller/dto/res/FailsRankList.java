@@ -5,17 +5,17 @@ import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 
 import java.util.List;
 
-public record MyAllFailsRes(
-        List<MyFailInfo> failInfos
-
+public record FailsRankList(
+        List<FailDetailInfo> failDetailInfoList
 ) {
-    public static MyAllFailsRes of(final List<MyFailInfo> failInfo) {
-        return new MyAllFailsRes(failInfo);
+    public static FailsRankList of(final List<FailDetailInfo> failDetailInfoList) {
+        return new FailsRankList(failDetailInfoList);
     }
 
-    public record MyFailInfo(
+    public record FailDetailInfo(
             Long failId,
             String content,
+            String writerName,
             BackgroundType backgroundType,
             int goodCount,
             int talentCount,
@@ -24,18 +24,21 @@ public record MyAllFailsRes(
             EmojiType clickedEmoji
     ) {
 
-
-        public static MyFailInfo of(Long failId,
-                                    String content,
-                                    BackgroundType backgroundType,
-                                    int goodCount,
-                                    int talentCount,
-                                    int pellikeonCount,
-                                    int drinkCount,
-                                    EmojiType clickedEmoji) {
+        public static FailDetailInfo of(
+                Long failId,
+                String content,
+                String writerName,
+                BackgroundType backgroundType,
+                int goodCount,
+                int talentCount,
+                int pellikeonCount,
+                int drinkCount,
+                EmojiType clickedEmoji
+        ) {
             return new Builder()
                     .failId(failId)
                     .content(content)
+                    .writerName(writerName)
                     .backgroundType(backgroundType)
                     .goodCount(goodCount)
                     .talentCount(talentCount)
@@ -45,13 +48,14 @@ public record MyAllFailsRes(
                     .build();
         }
 
-        private static Builder builder() {
+        private Builder builder() {
             return new Builder();
         }
 
-        public static class Builder {
+        private static class Builder {
             private Long failId;
             private String content;
+            private String writerName;
             private BackgroundType backgroundType;
             private int goodCount;
             private int talentCount;
@@ -66,6 +70,11 @@ public record MyAllFailsRes(
 
             public Builder content(String content) {
                 this.content = content;
+                return this;
+            }
+
+            public Builder writerName(String userName) {
+                this.writerName = userName;
                 return this;
             }
 
@@ -99,8 +108,8 @@ public record MyAllFailsRes(
                 return this;
             }
 
-            public MyFailInfo build() {
-                return new MyFailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
+            public FailsRankList.FailDetailInfo build() {
+                return new FailsRankList.FailDetailInfo(failId, content, writerName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

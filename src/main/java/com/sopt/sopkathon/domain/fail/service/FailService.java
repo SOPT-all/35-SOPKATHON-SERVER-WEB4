@@ -6,6 +6,7 @@ import com.sopt.sopkathon.domain.emoji.entity.EmojiEntity;
 import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.emoji.repository.EmojiRepository;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
+import com.sopt.sopkathon.domain.fail.controller.dto.res.FailsRankList;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.MyAllFailsRes;
 import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 import com.sopt.sopkathon.domain.fail.repository.FailRepository;
@@ -44,9 +45,6 @@ public class FailService {
 
         final List<AllFailsRes.FailInfo> failInfos = foundFails.stream().map(
                 failEntity -> {
-                    final UserEntity writerUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
-                            () -> new CustomException(FailMessage.NOT_FOUND_ENTITY));
-
                     final int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
                     final int talentCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
                     final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
@@ -66,7 +64,6 @@ public class FailService {
                     return AllFailsRes.FailInfo.of(
                             failEntity.getId(),
                             failEntity.getContent(),
-                            writerUser.getUserName(),
                             failEntity.getBackgroundType(),
                             goodCount,
                             talentCount,
@@ -133,4 +130,52 @@ public class FailService {
                 .collect(Collectors.toList());
         return MyAllFailsRes.of(failInfos);
     }
+
+    //실패 랭크리스트
+    public FailsRankList getFailsRankList(final Long userId) {
+        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
+        final List<FailEntity> foundFails = failRepository.findAll();
+        if (foundFails.isEmpty()) {
+            throw new CustomException(FailMessage.NOT_FOUND_ENTITY);
+        }
+
+        final List<FailsRankList.FailDetailInfo> failInfos = foundFails.stream().map(
+                failEntity -> {
+                    final UserEntity writerUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
+                            () -> new CustomException(FailMessage.NOT_FOUND_ENTITY));
+
+                    final int goodCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.GOOD);
+                    final int talentCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.TALENT);
+                    final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.PELLIKEON);
+                    final int drinkCount = emojiRepository.countByFailIdAndEmojiType(failEntity.getId(), EmojiType.DRINK);
+
+                    EmojiType clickedEmojiType;
+
+                    if(emojiRepository.existsByUserIdAndFailId(foundUser.getId(), failEntity.getId())) {
+                        final EmojiEntity foundEmoji = emojiRepository.findByUserIdAndFailId(foundUser.getId(), failEntity.getId()).orElseThrow(
+                                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+                        );
+                        clickedEmojiType = foundEmoji.getEmojiType();
+                    } else {
+                        clickedEmojiType = EmojiType.NOTHING;
+                    }
+
+                    return FailsRankList.FailDetailInfo.of(
+                            failEntity.getId(),
+                            failEntity.getContent(),
+                            writerUser.getUserName(),
+                            failEntity.getBackgroundType(),
+                            goodCount,
+                            talentCount,
+                            pellikeonCount,
+                            drinkCount,
+                            clickedEmojiType
+                    );
+                }).toList();
+        return FailsRankList.of(failInfos);
+    }
+
 }

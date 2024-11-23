@@ -1,9 +1,11 @@
 package com.sopt.sopkathon.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.sopt.sopkathon.common.response.message.ApiMessage;
 import com.sopt.sopkathon.common.response.message.SuccessMessage;
 
+@JsonPropertyOrder({"code", "message", "data"})
 public class BaseResponse<T> {
     private final int code;
     private final String message;

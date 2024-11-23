@@ -3,8 +3,12 @@ package com.sopt.sopkathon.domain.emoji.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "emoji")
-public class EmojiEntity {
+@Table(
+        name = "emoji",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "fail_id"})
+        }
+)public class EmojiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

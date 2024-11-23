@@ -36,10 +36,7 @@ public class FailService {
 
     //실패 전체 목록 조회
     public AllFailsRes getAllFails(final Long userID) {
-
-        final UserEntity foundUser = userRepository.findById(userID).orElseThrow(
-                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
-        );
+        final UserEntity foundUser = findUserById(userID);
 
         final List<FailEntity> foundFails = failRepository.findAll();
         if (foundFails.isEmpty()) {
@@ -80,10 +77,7 @@ public class FailService {
 
     //내 개인 실패 목록 조회
     public MyAllFailsRes getMyFails(final Long userId) {
-
-        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
-        );
+        final UserEntity foundUser = findUserById(userId);
 
         final List<FailEntity> foundMyFails = failRepository.findAllByUserId(userId);
 
@@ -136,9 +130,7 @@ public class FailService {
 
     // 실패 랭크리스트 (이모지 합계 상위 5개)
     public FailRankList getFailsRankList(final Long userId) {
-        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
-        );
+        final UserEntity foundUser = findUserById(userId);
 
         final List<FailEntity> foundFails = failRepository.findAll();
         if (foundFails.isEmpty()) {
@@ -192,9 +184,7 @@ public class FailService {
 
     //실패 상세 조회
     public DetailFailInfo getDetailFailInfo(final Long userId, final Long failId) {
-        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
-        );
+        final UserEntity foundUser = findUserById(userId);
 
         final FailEntity foundFail = failRepository.findById(failId).orElseThrow(
                 () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
@@ -235,10 +225,16 @@ public class FailService {
     // fail 생성
     @Transactional
     public void createFail(final Long userId, final String content, final BackgroundType backgroundType) {
-        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
-        );
+        final UserEntity foundUser = findUserById(userId);
         final FailEntity newFail = FailEntity.create(content, userId, backgroundType);
         failRepository.save(newFail);
     }
+
+    //유저찾기
+    private UserEntity findUserById(final Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+    }
+
 }

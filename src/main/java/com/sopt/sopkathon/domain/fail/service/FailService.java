@@ -6,13 +6,13 @@ import com.sopt.sopkathon.domain.emoji.entity.EmojiEntity;
 import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.emoji.repository.EmojiRepository;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
-import com.sopt.sopkathon.domain.fail.controller.dto.res.FailsRankList;
+import com.sopt.sopkathon.domain.fail.controller.dto.res.DetailFailInfo;
+import com.sopt.sopkathon.domain.fail.controller.dto.res.FailRankList;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.MyAllFailsRes;
 import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 import com.sopt.sopkathon.domain.fail.repository.FailRepository;
 import com.sopt.sopkathon.domain.user.entity.UserEntity;
 import com.sopt.sopkathon.domain.user.repository.UserRepository;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -131,8 +131,8 @@ public class FailService {
         return MyAllFailsRes.of(failInfos);
     }
 
-    //실패 랭크리스트
-    public FailsRankList getFailsRankList(final Long userId) {
+    // 실패 랭크리스트 (이모지 합계 상위 5개)
+    public FailRankList getFailsRankList(final Long userId) {
         final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
         );
@@ -142,8 +142,16 @@ public class FailService {
             throw new CustomException(FailMessage.NOT_FOUND_ENTITY);
         }
 
-        final List<FailsRankList.FailDetailInfo> failInfos = foundFails.stream().map(
-                failEntity -> {
+        final List<FailRankList.FailDetailInfo> failInfos = foundFails.stream()
+                // 각 실패에 대해 이모지 합계를 계산하고 정렬
+                .sorted((fail1, fail2) -> {
+                    int emojiSum1 = emojiRepository.countByFailId(fail1.getId());
+                    int emojiSum2 = emojiRepository.countByFailId(fail2.getId());
+                    return Integer.compare(emojiSum2, emojiSum1); // 내림차순 정렬
+                })
+                // 상위 5개만 선택
+                .limit(5)
+                .map(failEntity -> {
                     final UserEntity writerUser = userRepository.findById(failEntity.getUserId()).orElseThrow(
                             () -> new CustomException(FailMessage.NOT_FOUND_ENTITY));
 
@@ -154,7 +162,7 @@ public class FailService {
 
                     EmojiType clickedEmojiType;
 
-                    if(emojiRepository.existsByUserIdAndFailId(foundUser.getId(), failEntity.getId())) {
+                    if (emojiRepository.existsByUserIdAndFailId(foundUser.getId(), failEntity.getId())) {
                         final EmojiEntity foundEmoji = emojiRepository.findByUserIdAndFailId(foundUser.getId(), failEntity.getId()).orElseThrow(
                                 () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
                         );
@@ -163,10 +171,9 @@ public class FailService {
                         clickedEmojiType = EmojiType.NOTHING;
                     }
 
-                    return FailsRankList.FailDetailInfo.of(
+                    return FailRankList.FailDetailInfo.of(
                             failEntity.getId(),
                             failEntity.getContent(),
-                            writerUser.getUserName(),
                             failEntity.getBackgroundType(),
                             goodCount,
                             talentCount,
@@ -174,8 +181,51 @@ public class FailService {
                             drinkCount,
                             clickedEmojiType
                     );
-                }).toList();
-        return FailsRankList.of(failInfos);
+                })
+                .toList();
+
+        return FailRankList.of(failInfos);
     }
 
+    //실패 상세 조회
+    public DetailFailInfo getDetailFailInfo(final Long userId, final Long failId) {
+        final UserEntity foundUser = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
+        final FailEntity foundFail = failRepository.findById(failId).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
+        final UserEntity writerUser = userRepository.findById(foundFail.getUserId()).orElseThrow(
+                () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+        );
+
+        final int goodCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.GOOD);
+        final int talentCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.TALENT);
+        final int pellikeonCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.PELLIKEON);
+        final int drinkCount = emojiRepository.countByFailIdAndEmojiType(foundFail.getId(), EmojiType.DRINK);
+
+        EmojiType clickedEmojiType;
+
+        if (emojiRepository.existsByUserIdAndFailId(foundUser.getId(), foundFail.getId())) {
+            final EmojiEntity foundEmoji = emojiRepository.findByUserIdAndFailId(foundUser.getId(), foundFail.getId()).orElseThrow(
+                    () -> new CustomException(FailMessage.NOT_FOUND_ENTITY)
+            );
+            clickedEmojiType = foundEmoji.getEmojiType();
+        } else {
+            clickedEmojiType = EmojiType.NOTHING;
+        }
+
+        return DetailFailInfo.of(
+                foundFail.getId(),
+                foundFail.getContent(),
+                writerUser.getUserName(),
+                foundFail.getBackgroundType(),
+                goodCount,
+                talentCount,
+                pellikeonCount,
+                drinkCount,
+                clickedEmojiType);
+    }
 }

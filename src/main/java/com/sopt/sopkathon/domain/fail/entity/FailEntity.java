@@ -74,4 +74,5 @@ public class FailEntity {
     public BackgroundType getBackgroundType() {
         return backgroundType;
     }
+
 }

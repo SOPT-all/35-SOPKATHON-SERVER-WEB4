@@ -4,13 +4,12 @@ import com.sopt.sopkathon.common.response.ApiResponseUtil;
 import com.sopt.sopkathon.common.response.BaseResponse;
 import com.sopt.sopkathon.common.response.message.SuccessMessage;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.AllFailsRes;
-import com.sopt.sopkathon.domain.fail.controller.dto.res.FailsRankList;
+import com.sopt.sopkathon.domain.fail.controller.dto.res.DetailFailInfo;
+import com.sopt.sopkathon.domain.fail.controller.dto.res.FailRankList;
 import com.sopt.sopkathon.domain.fail.controller.dto.res.MyAllFailsRes;
 import com.sopt.sopkathon.domain.fail.service.FailService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class FailController {
@@ -41,7 +40,16 @@ public class FailController {
     public ResponseEntity<BaseResponse<?>> getAllFailsRank(
             @RequestHeader final Long userId
     ) {
-        final FailsRankList failsRank = failService.getFailsRankList(userId);
+        final FailRankList failsRank = failService.getFailsRankList(userId);  //entity 수정해야됨
         return ApiResponseUtil.success(SuccessMessage.OK, failsRank);
+    }
+
+    @GetMapping("fail/{failId}/detail")
+    public ResponseEntity<BaseResponse<?>> getDetailFails(
+            @RequestHeader(name = "userId") final Long userId,
+            @PathVariable(name = "failId") final Long failId
+    ) {
+        final DetailFailInfo detailFailInfo = failService.getDetailFailInfo(userId, failId);
+        return ApiResponseUtil.success(SuccessMessage.OK, detailFailInfo);
     }
 }

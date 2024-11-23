@@ -5,17 +5,16 @@ import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 
 import java.util.List;
 
-public record FailsRankList(
+public record FailRankList(
         List<FailDetailInfo> failDetailInfoList
 ) {
-    public static FailsRankList of(final List<FailDetailInfo> failDetailInfoList) {
-        return new FailsRankList(failDetailInfoList);
+    public static FailRankList of(final List<FailDetailInfo> failDetailInfoList) {
+        return new FailRankList(failDetailInfoList);
     }
 
     public record FailDetailInfo(
             Long failId,
             String content,
-            String writerName,
             BackgroundType backgroundType,
             int goodCount,
             int talentCount,
@@ -27,7 +26,6 @@ public record FailsRankList(
         public static FailDetailInfo of(
                 Long failId,
                 String content,
-                String writerName,
                 BackgroundType backgroundType,
                 int goodCount,
                 int talentCount,
@@ -38,7 +36,6 @@ public record FailsRankList(
             return new Builder()
                     .failId(failId)
                     .content(content)
-                    .writerName(writerName)
                     .backgroundType(backgroundType)
                     .goodCount(goodCount)
                     .talentCount(talentCount)
@@ -55,7 +52,6 @@ public record FailsRankList(
         private static class Builder {
             private Long failId;
             private String content;
-            private String writerName;
             private BackgroundType backgroundType;
             private int goodCount;
             private int talentCount;
@@ -70,11 +66,6 @@ public record FailsRankList(
 
             public Builder content(String content) {
                 this.content = content;
-                return this;
-            }
-
-            public Builder writerName(String userName) {
-                this.writerName = userName;
                 return this;
             }
 
@@ -108,8 +99,8 @@ public record FailsRankList(
                 return this;
             }
 
-            public FailsRankList.FailDetailInfo build() {
-                return new FailsRankList.FailDetailInfo(failId, content, writerName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
+            public FailRankList.FailDetailInfo build() {
+                return new FailRankList.FailDetailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

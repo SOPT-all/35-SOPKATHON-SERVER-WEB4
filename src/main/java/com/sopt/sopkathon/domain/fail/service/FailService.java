@@ -11,10 +11,8 @@ import com.sopt.sopkathon.domain.fail.repository.FailRepository;
 import com.sopt.sopkathon.domain.user.entity.UserEntity;
 import com.sopt.sopkathon.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponse;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service

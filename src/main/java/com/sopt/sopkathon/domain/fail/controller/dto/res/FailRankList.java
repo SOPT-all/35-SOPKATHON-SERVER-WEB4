@@ -5,15 +5,14 @@ import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
 
 import java.util.List;
 
-public record MyAllFailsRes(
-        List<MyFailInfo> failInfos
-
+public record FailRankList(
+        List<FailDetailInfo> failDetailInfoList
 ) {
-    public static MyAllFailsRes of(final List<MyFailInfo> failInfo) {
-        return new MyAllFailsRes(failInfo);
+    public static FailRankList of(final List<FailDetailInfo> failDetailInfoList) {
+        return new FailRankList(failDetailInfoList);
     }
 
-    public record MyFailInfo(
+    public record FailDetailInfo(
             Long failId,
             String content,
             BackgroundType backgroundType,
@@ -24,15 +23,16 @@ public record MyAllFailsRes(
             EmojiType clickedEmoji
     ) {
 
-
-        public static MyFailInfo of(Long failId,
-                                    String content,
-                                    BackgroundType backgroundType,
-                                    int goodCount,
-                                    int talentCount,
-                                    int pellikeonCount,
-                                    int drinkCount,
-                                    EmojiType clickedEmoji) {
+        public static FailDetailInfo of(
+                Long failId,
+                String content,
+                BackgroundType backgroundType,
+                int goodCount,
+                int talentCount,
+                int pellikeonCount,
+                int drinkCount,
+                EmojiType clickedEmoji
+        ) {
             return new Builder()
                     .failId(failId)
                     .content(content)
@@ -45,11 +45,11 @@ public record MyAllFailsRes(
                     .build();
         }
 
-        private static Builder builder() {
+        private Builder builder() {
             return new Builder();
         }
 
-        public static class Builder {
+        private static class Builder {
             private Long failId;
             private String content;
             private BackgroundType backgroundType;
@@ -99,8 +99,8 @@ public record MyAllFailsRes(
                 return this;
             }
 
-            public MyFailInfo build() {
-                return new MyFailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
+            public FailRankList.FailDetailInfo build() {
+                return new FailRankList.FailDetailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

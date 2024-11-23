@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface EmojiRepository extends JpaRepository<EmojiEntity, Long> {
     int countByFailIdAndEmojiType(Long failId, EmojiType emojiType);
     int countByFailId(Long failId);
-    Optional<EmojiEntity> findByUserIdAndFailId(Long userId, Long failId);
+    Optional<EmojiEntity> findByUserIdAndFailId(final Long userId, final Long failId);
+    boolean existsByUserIdAndFailId(final Long userId, final Long failId);
 
 }

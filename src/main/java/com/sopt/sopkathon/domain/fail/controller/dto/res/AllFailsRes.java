@@ -1,7 +1,7 @@
 package com.sopt.sopkathon.domain.fail.controller.dto.res;
 
+import com.sopt.sopkathon.domain.emoji.entity.EmojiType;
 import com.sopt.sopkathon.domain.fail.entity.BackgroundType;
-import com.sopt.sopkathon.domain.fail.entity.FailEntity;
 
 import java.util.List;
 
@@ -16,32 +16,32 @@ public record AllFailsRes(
     public record FailInfo(
             Long failId,
             String content,
-            String userName,
             BackgroundType backgroundType,
             int goodCount,
             int talentCount,
             int pellikeonCount,
-            int drinkCount
+            int drinkCount,
+            EmojiType clickedEmoji
     ) {
 
 
         public static FailInfo of(Long failId,
                                   String content,
-                                  String userName,
                                   BackgroundType backgroundType,
                                   int goodCount,
                                   int talentCount,
                                   int pellikeonCount,
-                                  int drinkCount) {
+                                  int drinkCount,
+                                  EmojiType clickedEmoji) {
             return new Builder()
                     .failId(failId)
                     .content(content)
-                    .userName(userName)
                     .backgroundType(backgroundType)
                     .goodCount(goodCount)
                     .talentCount(talentCount)
                     .pellikeonCount(pellikeonCount)
                     .drinkCount(drinkCount)
+                    .clickedEmoji(clickedEmoji)
                     .build();
         }
 
@@ -49,15 +49,15 @@ public record AllFailsRes(
             return new Builder();
         }
 
-        public static class Builder {
+        private static class Builder {
             private Long failId;
             private String content;
-            private String userName;
             private BackgroundType backgroundType;
             private int goodCount;
             private int talentCount;
             private int pellikeonCount;
             private int drinkCount;
+            private EmojiType clickedEmoji;
 
             public Builder failId(Long failId) {
                 this.failId = failId;
@@ -66,11 +66,6 @@ public record AllFailsRes(
 
             public Builder content(String content) {
                 this.content = content;
-                return this;
-            }
-
-            public Builder userName(String userName) {
-                this.userName = userName;
                 return this;
             }
 
@@ -99,8 +94,13 @@ public record AllFailsRes(
                 return this;
             }
 
+            public Builder clickedEmoji(EmojiType clickedEmoji) {
+                this.clickedEmoji = clickedEmoji;
+                return this;
+            }
+
             public FailInfo build() {
-                return new FailInfo(failId, content, userName, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount);
+                return new FailInfo(failId, content, backgroundType, goodCount, talentCount, pellikeonCount, drinkCount, clickedEmoji);
             }
         }
     }

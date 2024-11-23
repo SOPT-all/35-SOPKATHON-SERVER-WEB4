@@ -30,4 +30,13 @@ public class EmojiController {
         emojiService.postEmoji(userId, failId, emojiType);
         return ApiResponseUtil.success(SuccessMessage.CREATED);
     }
+
+    @DeleteMapping("/emoji/{failId}")
+    public ResponseEntity<BaseResponse<?>> deleteEmoji(
+            @RequestHeader final Long userId,
+            @PathVariable final Long failId
+    ) {
+        emojiService.deleteEmoji(userId, failId);
+        return ApiResponseUtil.success(SuccessMessage.OK);
+    }
 }
